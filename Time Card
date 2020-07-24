@@ -1,0 +1,61 @@
+import time, csv, os
+import datetime as dt
+from datetime import datetime
+
+os.chdir(r"C:\Users\Kazushi Rickert\Desktop\PythonProjects\CSV")
+
+outputfile = open("timesheet.csv", "a", newline = "")
+outputwriter = csv.writer(outputfile)
+
+#questions asking for full name
+while True:
+    x = input("Please enter in your first and last name: ").split()
+    if len(x)<=1:
+        print("Please try your name again as you did not fill out your full name")
+    else:
+        break
+fullname = " ".join(x)
+
+#Asking for the work week and then will either post a header or no header
+question = input("""Is this a new work week?
+                (Please TYPE yes or no):
+                """)
+for i in question:
+    if i.lower()== "y" or i.lower() == "yes":
+        outputwriter.writerow(["Name", "date", "start time","Lunch Start", "Lunch Finish", "endtime", "Total hours Worked Today"])
+    elif i.lower() == "n" or i.lower() == "no":
+        continue
+
+while True:
+    #Start of the day
+    startenter = input("Please press enter to start your work.")
+    start = time.strftime("%H:%M:%S", time.localtime())
+    start_dt = dt.datetime.strptime(start, '%H:%M:%S')
+
+    #Start of lunch
+    lunchenter = input("Press ENTER to start LUNCH.")
+    startlunch = time.strftime("%H:%M:%S", time.localtime())
+    lunch_start = dt.datetime.strptime(startlunch, '%H:%M:%S')
+
+    #End of lunch
+    lunchfinish = input("Press ENTER to finish LUNCH.")
+    lunchend = time.strftime("%H:%M:%S", time.localtime())
+    lunch_end = dt.datetime.strptime(lunchend, '%H:%M:%S')
+    #End of the day
+    endenter = input("Press ENTER for finishing work.")
+    end = time.strftime("%H:%M:%S", time.localtime())
+    end_dt = dt.datetime.strptime(end, '%H:%M:%S')
+    #calculating the amount of hours worked
+    differencetime = end_dt - start_dt
+    totallunch = lunch_end - lunch_start
+    totaldifference = differencetime - totallunch
+    #putting all the information in a csv file
+    outputwriter.writerow([fullname, datetime.today().strftime("%m/%d/%y"), start,startlunch,lunchend, end, totaldifference ])
+
+    print(totaldifference)
+    break
+
+outputfile.close()
+
+
+
